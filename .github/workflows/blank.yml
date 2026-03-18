@@ -6,16 +6,49 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Repository with Submodules
+    - name: Checkout Repository
       uses: actions/checkout@v4
       with:
-        submodules: recursive
-        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
 
-    - name: Display Submodule Contents
+    - name: Verify submodule configuration
       run: |
-        echo "Repository checked out successfully"
-        ls -la modules/w_modbus/
-        
-    - name: Build (Add your build commands here)
-      run: echo "Building project..."
+        echo "=== .gitmodules content ==="
+        cat .gitmodules
+        echo ""
+        echo "=== Registered submodules ==="
+        git config --file .gitmodules --get-regexp "submodule\..*\.url" || echo "No submodule URLs found"
+        echo ""
+        echo "=== Checking submodule URL reachability ==="
+        SUBMODULE_URL=$(git config --file .gitmodules --get submodule.modules/w_modbus.url)
+        if git ls-remote "$SUBMODULE_URL" HEAD > /dev/null 2>&1; then
+          echo "Submodule URL is reachable: $SUBMODULE_URL"
+        else
+          echo "ERROR: Cannot reach submodule URL: $SUBMODULE_URL"
+          exit 1
+        fi
+
+    - name: Initialize and update submodules
+      run: |
+        echo "=== Initializing submodules ==="
+        git submodule init
+        echo ""
+        echo "=== Updating submodules with progress output ==="
+        git submodule update --recursive --progress
+        echo ""
+        echo "=== Submodule status ==="
+        git submodule status
+
+    - name: Verify submodule checkout
+      run: |
+        echo "=== Verifying modules/w_modbus directory ==="
+        if [ -d "modules/w_modbus" ] && [ -n "$(ls -A modules/w_modbus)" ]; then
+          echo "Submodule successfully checked out."
+          ls -la modules/w_modbus/
+        else
+          echo "ERROR: modules/w_modbus directory is missing or empty."
+          exit 1
+        fi
+
+    - name: Build
+      run: echo "Building project with submodules..."
