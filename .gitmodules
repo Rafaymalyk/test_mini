@@ -1,0 +1,3 @@
+[submodule "modules/w_modbus"]
+	path = modules/w_modbus
+	url = https://github.com/Rafaymalyk/w_modbus.git
