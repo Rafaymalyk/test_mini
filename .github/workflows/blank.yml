@@ -6,10 +6,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Repository
+    - name: Checkout Repository with Submodules
       uses: actions/checkout@v4
       with:
         submodules: recursive
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Display Submodule Contents
-      run: ls -la modules/w_modbus/
+      run: |
+        echo "Repository checked out successfully"
+        ls -la modules/w_modbus/
+        
+    - name: Build (Add your build commands here)
+      run: echo "Building project..."
