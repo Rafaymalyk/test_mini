@@ -15,7 +15,7 @@ jobs:
     - name: Display Submodule Contents
       run: |
         echo "Repository checked out successfully"
-        ls -la modules/w_modbus/
+        ls -la modules/test_mini/
         
     - name: Build (Add your build commands here)
       run: echo "Building project..."

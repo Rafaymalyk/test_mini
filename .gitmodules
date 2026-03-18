@@ -1,3 +1,4 @@
-[submodule "modules/w_modbus"]
-	path = modules/w_modbus
-	url = https://github.com/Rafaymalyk/w_modbus.git
+
+[submodule "modules/test_mini"]
+	path = modules/test_mini
+	url = https://github.com/Rafaymalyk/test_mini.git
